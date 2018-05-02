@@ -874,19 +874,27 @@ namespace XrmToolBox.New
                 return;
             }
 
-            var content = dpMain.Contents.FirstOrDefault(c => (c as PluginForm)?.PluginTitle == message.TargetPlugin) as DockContent;
-            if (content != null && !message.NewInstance)
-            {
-                content.Show(dpMain, content.DockState);
-            }
-            else
+            var content = GetPluginByName(message.TargetPlugin);
+            if (content == null || message.NewInstance)
             {
                 pluginsForm.OpenPlugin(message.TargetPlugin);
-                MainForm_MessageBroker(sender, message);
+            }
+            content = GetPluginByName(message.TargetPlugin);
+            if (content == null)
+            {
+                MessageBox.Show($"Cannot switch to plugin {message.TargetPlugin}.", message.SourcePlugin, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            content.Show(dpMain, content.DockState);
+            content.SendIncomingBrokerMessage(message);
+        }
 
-           ((PluginForm)content).SendIncomingBrokerMessage(message);
+        private PluginForm GetPluginByName(string name)
+        {
+            return dpMain.Contents
+                .Where(c => c is PluginForm)
+                .Select(c => c as PluginForm)
+                .FirstOrDefault(c => c.PluginTitle == name);
         }
 
         private bool IsMessageValid(object sender, MessageBusEventArgs message)
