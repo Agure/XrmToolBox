@@ -560,6 +560,7 @@ namespace XrmToolBox.New
                 }
 
                 var pluginForm = new PluginForm(pluginControl, name);
+                pluginForm.PluginName = plugin.Metadata.Name;
                 pluginForm.Show(dpMain, DockState.Document);
                 pluginForm.SendMessageToStatusBar += StatusBarMessenger_SendMessageToStatusBar;
                 pluginForm.CloseRequested += PluginForm_CloseRequested;
@@ -894,7 +895,7 @@ namespace XrmToolBox.New
             return dpMain.Contents
                 .Where(c => c is PluginForm)
                 .Select(c => c as PluginForm)
-                .FirstOrDefault(c => c.PluginTitle == name);
+                .FirstOrDefault(c => c.PluginName == name);
         }
 
         private bool IsMessageValid(object sender, MessageBusEventArgs message)

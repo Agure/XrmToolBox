@@ -122,6 +122,8 @@ namespace XrmToolBox.New
 
         public string PluginTitle => pluginControlBase.GetType().GetTitle();
 
+        public string PluginName { get; internal set; }
+
         public IXrmToolBoxPluginControl Control => pluginControlBase;
 
         private void PluginForm_FormClosing(object sender, FormClosingEventArgs e)
